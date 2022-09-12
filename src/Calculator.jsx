@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './App.css';
 import Button from './Button';
 
@@ -16,7 +16,9 @@ const Calculator = () => {
   const [num2, setNum2] = useState();
   const [result, setResult] = useState();
   const [active, setActive] = useState(true);
-  const [activeNum1, setActiveNum1] = useState(true)
+  const [activeNum1, setActiveNum1] = useState(true);
+  const [lastOperation, setLastOperation] = useState();
+  const [swapState, setSwapState] = useState(true)
 
   const clearNum = () =>{
     setNum1(null)
@@ -45,10 +47,12 @@ const Calculator = () => {
     const temp = num1;
     setNum1(num2);
     setNum2(temp);
+    setSwapState(!swapState)
   }
 
   const operationHandler = (type) =>{
     if(num1 && num2){
+      setLastOperation(type)
       switch (type) {
         case "+":
           setResult(num1+num2)
@@ -70,6 +74,12 @@ const Calculator = () => {
       alert("fill the number!")
     }
   }
+
+  useEffect(() => {
+    if(num1 && num2 && lastOperation){
+      operationHandler(lastOperation)
+    }
+  }, [swapState]);
 
   return (
     <div className="container">
